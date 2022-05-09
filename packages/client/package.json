@@ -1,0 +1,31 @@
+{
+  "name": "@atothek/client",
+  "packageManager": "yarn@3.2.0",
+  "license": "MIT",
+  "main": "src/index.tsx",
+  "config": {
+    "app": {
+      "name": "client-template-app",
+      "title": "Template for creating react based single page applications."
+    }
+  },
+  "scripts": {
+    "prebuild": "yarn clean && yarn quality",
+    "build": "cross-env NODE_ENV=production webpack-cli --color --config ./config/webpack.js",
+    "clean": "rimraf ./coverage ./dist ./temp",
+    "start": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.js",
+    "type": "tsc --noEmit",
+    "quality": "yarn type"
+  },
+  "dependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "styled-components": "alpha",
+    "styled-normalize": "^8.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.3",
+    "msw": "^0.39.2"
+  }
+}

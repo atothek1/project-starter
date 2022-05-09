@@ -8,3 +8,6 @@
 
 .idea
 node_modules
+coverage
+dist
+temp
