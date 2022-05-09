@@ -13,7 +13,9 @@
     "ws:new": "sh -c 'yarn packages/${0} init && yarn'",
     "ws:add": "sh -c 'yarn workspace ${0} add ${1}'",
     "ws:add-d": "sh -c 'yarn workspace ${0} add -D ${1}'",
-    "ws:run": "sh -c 'yarn workspace ${0} run ${1}'"
+    "ws:run": "sh -c 'yarn workspace ${0} run ${1}'",
+    "client:start": "yarn ws:run @atothek/client start",
+    "client:build": "yarn ws:run @atothek/client build"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
