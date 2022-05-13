@@ -1,0 +1,1 @@
+export { pingHandler } from "./pingHandler";
