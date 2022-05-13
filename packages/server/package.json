@@ -2,8 +2,13 @@
   "name": "@atothek/server",
   "packageManager": "yarn@3.2.0",
   "scripts": {
+    "prebuild": "yarn clean && yarn quality",
+    "build": "",
     "start": "nodemon ./src/index.ts",
-    "build": ""
+    "clean": "rimraf ./coverage ./dist ./temp",
+    "type": "tsc --noEmit",
+    "test": "echo 'no tests yet'",
+    "quality": "yarn type && yarn test"
   },
   "dependencies": {
     "compression": "^1.7.4",
