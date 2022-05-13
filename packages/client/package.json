@@ -12,9 +12,10 @@
   "scripts": {
     "prebuild": "yarn clean && yarn quality",
     "build": "cross-env NODE_ENV=production webpack-cli --color --config ./config/webpack.js",
-    "clean": "rimraf ./coverage ./dist ./temp",
     "start": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.js",
+    "clean": "rimraf ./coverage ./dist ./temp",
     "type": "tsc --noEmit",
+    "test": "echo 'no tests yet'",
     "quality": "yarn type"
   },
   "dependencies": {
