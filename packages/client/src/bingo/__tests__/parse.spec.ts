@@ -37,7 +37,7 @@ describe("parseRawInput()", () => {
         ].map( val => val.toString() );
 
         expect(result.calledNumbers).toStrictEqual(expected);
-        expect(result.cards).toHaveLength(5);
+        expect(result.cards).toHaveLength(1);
         expect(result.cards[0]?.grid).toHaveLength(5);
     });
 });
