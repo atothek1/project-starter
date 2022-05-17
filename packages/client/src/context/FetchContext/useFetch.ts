@@ -1,9 +1,12 @@
 import { useEffect, useReducer } from "react";
 
-export interface UseFetchState<TData = unknown, TError = unknown> {
+interface DefaultError {
+    readonly status: number;
+}
+export interface UseFetchState<TData = unknown, TError = DefaultError> {
     readonly isLoading: boolean;
-    readonly data: TData;
-    readonly error: TError;
+    readonly data: TData | null;
+    readonly error: TError | null;
 }
 
 enum ActionTypes {
@@ -27,16 +30,17 @@ function reducer(
         case ActionTypes.response:
             return { ...state, isLoading: false, data: action.payload };
         case ActionTypes.error:
-            return { ...state, isLoading: false, error: action.payload };
+            return { ...state, isLoading: false, error: action.payload as DefaultError };
         default:
             return state;
     }
 }
 
-export function useFetch<TData, TError>(
+
+export function useFetch<TData>(
     url: string,
     options = {}
-): UseFetchState<TData, TError> {
+): UseFetchState<TData> {
     const [{ isLoading, error, data }, dispatch] = useReducer(reducer, {
         isLoading: false,
         data: null,
@@ -51,10 +55,15 @@ export function useFetch<TData, TError>(
         dispatch({ type: ActionTypes.loading, payload: null });
 
         fetch(url, JSON.parse(serializedOptions))
-            .then((res) => res.json())
+            .then((res) => {
+                if( res.status >= 400 ) {
+                    throw { status: res.status };
+                }
+                return res.json();
+            })
             .then((data) => dispatch({ type: ActionTypes.response, payload: data }))
             .catch((error) => dispatch({ type: ActionTypes.error, payload: error }));
     }, [url, serializedOptions]);
 
-    return { isLoading, error, data } as UseFetchState<TData, TError>;
+    return { isLoading, error, data } as UseFetchState<TData>;
 }

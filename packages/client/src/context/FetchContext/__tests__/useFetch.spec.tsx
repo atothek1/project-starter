@@ -1,13 +1,16 @@
-import "@testing-library/jest-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { renderHook } from "@atothek/testing";
+import { waitFor, screen, render } from "@atothek/testing";
 import { FetchProvider } from "../FetchProvider";
 import { useFetch } from "../useFetch";
 
 const server = setupServer(
     rest.get('/test', (_req, res, ctx) => {
-        return res(ctx.json({greeting: 'hello there'}))
+        return res(ctx.json({info: 'success'}))
+    }),
+
+    rest.all('*', (_req, res, ctx) => {
+        return res( ctx.status(  404 ) )
     })
 );
 
@@ -15,26 +18,74 @@ beforeAll( () => server.listen() );
 afterEach( () => server.resetHandlers() );
 afterAll( () => server.close() );
 
-describe( "useFetch()", () => {
+describe( "augmented useFetch()", () => {
+    function useTest(){
+        return useFetch<{readonly info: string}>( "/test" );
+    }
+    function TestUseFetch() {
+        const { isLoading, data, error } = useTest();
 
-    const url = "/test";
+        if( isLoading ) {
+            return ( <p data-testid="status-info">loading</p> );
+        }
 
-    const wrapper = (props:React.PropsWithChildren<any>) => {
-        const {children} = props;
-        return <FetchProvider>{children}</FetchProvider>
-    };
+        if( error !== null ) {
+            return ( <p data-testid="status-info">has error, {error.status}</p> );
+        }
 
-    test("success response", async () => {
-        const { result, waitForNextUpdate } = renderHook( () => { return useFetch( url ) }, { wrapper } );
+        return ( <p data-testid="status-info">was a {data?.info}</p> );
+    }
 
-        expect( result.current.isLoading ).toBeTruthy();
-        expect( result.current.data ).toBeNull();
-        expect( result.current.error ).toBeNull();
+    test( "success fetch response", async () => {
 
-        await waitForNextUpdate();
+        render( <FetchProvider><TestUseFetch /></FetchProvider> );
 
-        expect( result.current.isLoading ).toBeFalsy();
-        expect( result.current.data ).not.toBeNull();
-        expect( result.current.error ).toBeNull();
+        expect(screen.getByTestId("status-info")).toHaveTextContent("loading");
+
+        // wait for next render cycle after data arrived
+        await waitFor( () => screen.getByText("was a success") );
+
+        expect(screen.getByTestId("status-info")).toHaveTextContent("was a success");
+    });
+} );
+describe( "direct useFetch()", () => {
+
+    function TestUseFetch( props: { readonly url: string } ) {
+        const { url } = props;
+        const { isLoading, data, error } = useFetch<{readonly info: string}>( url );
+
+        if( isLoading ) {
+            return ( <p data-testid="status-info">loading</p> );
+        }
+
+        if( error !== null ) {
+            return ( <p data-testid="status-info">has error, {error.status}</p> );
+        }
+
+        return ( <p data-testid="status-info">was a {data?.info}</p> );
+    }
+
+    test( "success fetch response", async () => {
+
+        render( <FetchProvider><TestUseFetch url="/test" /></FetchProvider> );
+
+        expect(screen.getByTestId("status-info")).toHaveTextContent("loading");
+
+        // wait for next render cycle after data arrived
+        await waitFor( () => screen.getByText("was a success") );
+
+        expect(screen.getByTestId("status-info")).toHaveTextContent("was a success");
+    });
+
+    test( "error fetch response", async () => {
+
+        render( <FetchProvider><TestUseFetch url="/unknown" /></FetchProvider> );
+
+        expect(screen.getByTestId("status-info")).toHaveTextContent("loading");
+
+        // wait for next render cycle after data arrived
+        await waitFor( () => screen.getByText("has error, 404") );
+
+        expect(screen.getByTestId("status-info")).toHaveTextContent("has error, 404");
     });
 } );
