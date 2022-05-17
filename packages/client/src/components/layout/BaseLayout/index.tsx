@@ -1,15 +1,20 @@
 import { Header, Main, Nav } from "@components";
+import { Outlet } from "react-router-dom";
 
-interface BaseLayoutProps extends React.PropsWithChildren<any> {
+interface BaseLayoutProps {
+    readonly headerElement:React.ReactNode;
+    readonly navigationElement: React.ReactNode;
 }
 
 export function BaseLayout( props: BaseLayoutProps ) {
-    const { children } = props;
+    const { headerElement, navigationElement } = props;
     return (
         <>
-            <Header>Header</Header>
-            <Main>{children}</Main>
-            <Nav>Navigation</Nav>
+            <Header>{ headerElement }</Header>
+            <Main>
+                <Outlet />
+            </Main>
+            <Nav>{ navigationElement }</Nav>
         </>
     );
 }
