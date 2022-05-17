@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App, GlobalStyles } from "@components";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { FetchOptions, FetchProvider } from "./context";
 
 const theme = {};
 
@@ -25,19 +26,25 @@ async function main() {
         rootElement || document.body.appendChild(document.createElement("div"))
     );
 
+    const fetchOptions: FetchOptions = {
+        baseUrl: "http://localhost:3001/v1"
+    };
+
     // <StrictMode> causes additional
-    // rerenders, no representative for production
+    // rerenders, not representative for production
     // gets stripped in prod builds
-    root.render(<React.StrictMode>
+    root.render( <React.StrictMode>
         <ThemeProvider theme={theme}>
             <>
                 <GlobalStyles/>
                 <BrowserRouter>
-                    <App/>
+                    <FetchProvider options={ fetchOptions }>
+                        <App/>
+                    </FetchProvider>
                 </BrowserRouter>
             </>
         </ThemeProvider>
-    </React.StrictMode>);
+    </React.StrictMode> );
 }
 
 main().catch(err => console.error(err));

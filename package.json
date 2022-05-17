@@ -17,7 +17,7 @@
     "test:all": "yarn workspaces foreach -pvi run test",
     "type:all": "yarn workspaces foreach -pvi run type",
     "client:start": "yarn ws:run @atothek/client start",
-    "client:build": "yarn ws:run @atothek/client build",
+    "client:build": "yarn ws:run @atothek/client prebuild && yarn ws:run @atothek/client build",
     "server:start": "yarn ws:run @atothek/server start"
   },
   "devDependencies": {

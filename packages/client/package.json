@@ -17,7 +17,7 @@
     "type": "tsc --noEmit",
     "clear-jest": "rimraf ./node_modules/.cache && jest --clearCache",
     "test": "jest --config ./config/jest.config.js --ci --passWithNoTests",
-    "quality": "yarn type"
+    "quality": "yarn type && yarn test"
   },
   "dependencies": {
     "react": "^18.1.0",
