@@ -1,9 +1,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App, GlobalStyles } from "@components";
+import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 const theme = {};
+
 async function main() {
 
     // conditional compilation for Mock service worker integration
@@ -26,14 +28,16 @@ async function main() {
     // <StrictMode> causes additional
     // rerenders, no representative for production
     // gets stripped in prod builds
-    root.render( <React.StrictMode>
-        <ThemeProvider theme={ theme }>
+    root.render(<React.StrictMode>
+        <ThemeProvider theme={theme}>
             <>
                 <GlobalStyles/>
-                <App/>
+                <BrowserRouter>
+                    <App/>
+                </BrowserRouter>
             </>
         </ThemeProvider>
-    </React.StrictMode> );
+    </React.StrictMode>);
 }
 
 main().catch(err => console.error(err));

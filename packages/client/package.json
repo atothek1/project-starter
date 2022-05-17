@@ -15,7 +15,8 @@
     "start": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.js",
     "clean": "rimraf ./coverage ./dist ./temp",
     "type": "tsc --noEmit",
-    "test": "echo 'no tests yet'",
+    "clear-jest": "rimraf ./node_modules/.cache && jest --clearCache",
+    "test": "jest --config ./config/jest.config.js --ci --passWithNoTests",
     "quality": "yarn type"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "styled-normalize": "^8.0.7"
   },
   "devDependencies": {
+    "@atothek/testing": "workspace:*",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "msw": "^0.39.2"
