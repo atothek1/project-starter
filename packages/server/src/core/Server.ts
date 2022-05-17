@@ -43,7 +43,7 @@ export class Server {
     }
 
     private init() {
-        this.app.use(cors());
+        this.app.use(cors( { origin: [ "http://localhost:3000" ] } ) );
         this.app.use(helmet());
         this.app.set("etag", false);
         this.app.disable("x-powered-by");
